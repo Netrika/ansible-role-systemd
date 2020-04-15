@@ -19,9 +19,7 @@ systemd_service_list:
     pidfile: "/run/{{ project_name }}/{{ project_name }}.pid"
     workingdir: "{{ backend_current }}"
     user: "{{ project_user }}"
-    execstart: >-
-      {{ venv_path }}/bin/gunicorn staff.wsgi:application
-      --pid /run/{{ project_name }}/{{ project_name }}.pid -c {{ backend_current }}/gunicorn.py
+    execstart: {{ venv_path }}/bin/gunicorn example.wsgi:application
     execreload: /bin/kill -s HUP $MAINPID
     execstop: /bin/kill -s TERM $MAINPID
     description: "{{ project_name|upper }} gunicorn service."
@@ -74,9 +72,7 @@ systemd_service_list:
         pidfile: "/run/{{ project_name }}/{{ project_name }}.pid"
         workingdir: "{{ backend_current }}"
         user: "{{ project_user }}"
-        execstart: >-
-          {{ venv_path }}/bin/gunicorn staff.wsgi:application
-          --pid /run/{{ project_name }}/{{ project_name }}.pid -c {{ backend_current }}/gunicorn.py
+        execstart: {{ venv_path }}/bin/gunicorn example.wsgi:application
         execreload: /bin/kill -s HUP $MAINPID
         execstop: /bin/kill -s TERM $MAINPID
         description: "{{ project_name|upper }} gunicorn service."
