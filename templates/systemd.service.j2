@@ -1,0 +1,56 @@
+[Unit]
+Description={{ item.description | default(item.name) }}
+After=network.target
+{% if item.requires is defined %}
+Requires={{ item.requires }}
+{% endif %}
+{% if item.wants is defined %}
+Wants={{ item.wants }}
+{% endif %}
+{% if item.partof is defined %}
+PartOf={{ item.partof }}
+{% endif %}
+
+{% if item.requires is undefined and item.wants is undefined %}
+[Service]
+{% if item.type is defined %}
+Type={{ item.type }}
+{% endif %}
+{% if item.pidfile is defined %}
+PIDFile={{ item.pidfile }}
+{% endif %}
+{% if item.environmentfile is defined %}
+EnvironmentFile={{ item.environmentfile }}
+{% endif %}
+{% if item.runtimedir is defined %}
+RuntimeDirectory={{ item.runtimedir }}
+RuntimeDirectoryMode=0755
+{% endif %}
+{% if item.workingdir is defined %}
+WorkingDirectory={{ item.workingdir }}
+{% endif %}
+{% if item.user is defined %}
+User={{ item.user }}
+Group={{ item.group|default(item.user) }}
+{% endif %}
+{% if item.execstart is defined %}
+ExecStart={{ item.execstart }}
+{% endif %}
+{% if item.execreload is defined %}
+ExecReload={{ item.execreload }}
+{% endif %}
+{% if item.execstop is defined %}
+ExecStop={{ item.execstop }}
+{% endif %}
+{% if item.syslogidentifier is defined %}
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier={{ item.syslogidentifier }}
+{% endif %}
+Restart={{ item.restart|default('always') }}
+RestartSec={{ item.restartsec|default('1min') }}
+PrivateTmp={{ item.privatetmp|default('true') }}
+
+[Install]
+WantedBy=multi-user.target
+{% endif %}

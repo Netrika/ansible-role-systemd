@@ -1,0 +1,5 @@
+---
+# defaults file for systemd-service
+
+systemd_service_template: systemd.service.j2
+systemd_service_list: []

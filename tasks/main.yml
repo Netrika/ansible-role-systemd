@@ -1,0 +1,34 @@
+---
+- name: adding a systemd unit
+  template:
+    src: "{{ systemd_service_template }}"
+    dest: "{{ item.unit_path|default('/etc/systemd/system') }}/{{ item.name }}.{{ item.unit_type|default('service') }}"
+    owner: root
+    group: root
+    mode: 0644
+  when: item.name is defined and (item.skip is undefined or not item.skip)
+  loop: "{{ systemd_service_list }}"
+  loop_control:
+    label: "{{ item.name }}"
+
+- name: copying a daemon config
+  template:
+    src: "{{ item.config_src }}"
+    dest: "{{ item.config_dest }}"
+    mode: 0644
+  loop: "{{ systemd_service_list|selectattr('config_src', 'defined')|selectattr('config_dest', 'defined')|list }}"
+  loop_control:
+    label: "{{ item.config_dest }}"
+
+- name: a systemd daemon reload
+  systemd:
+    daemon_reload: yes
+
+- name: changing status of a service
+  systemd:
+    enabled: "{{ item.enabled|default(omit) }}"
+    name: "{{ item.name }}.{{ item.unit_type|default('service') }}"
+    state: "{{ item.state }}"
+  loop: "{{ systemd_service_list|selectattr('state', 'defined')|list }}"
+  loop_control:
+    label: "{{ item.name }}"

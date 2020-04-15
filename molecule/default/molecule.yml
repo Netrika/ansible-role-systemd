@@ -1,0 +1,27 @@
+---
+dependency:
+  name: galaxy
+driver:
+  name: docker
+platforms:
+  - name: centos7
+    image: docker.io/pycontribs/centos:7
+    pre_build_image: true
+    command: /sbin/init
+    tmpfs:
+      - /run
+      - /tmp
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+provisioner:
+  name: ansible
+  inventory:
+    group_vars:
+      all:
+        systemd_service_list:
+          - name: foo
+            execstart: /bin/bash -c 'while :; do echo "Press <CTRL+C> to exit."; sleep 1; done'
+            execstop: /bin/kill -s TERM -p $MAINPID
+            state: started
+verifier:
+  name: ansible
